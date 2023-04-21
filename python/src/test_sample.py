@@ -55,26 +55,29 @@ class Test_student(unittest.TestCase):
         
 class Test_courseOffering(unittest.TestCase):
     def test_courseOffering(self):
+        #Arrange
         courseOffering = CourseOffering(2,'MA',2023,4) 
         studentOne = Student('Builder', 'Bob', 'none', 'none', 'bb')
         studentTwo = Student('Bobcat', 'Boomer', 'none', 'none', 'hihj')
-        studentThree = Student('Brown', 'Bobby', 'none', 'none', 'hd')
-        studentFour = Student('Bee', 'Bumble', 'none', 'none', 'ebal')
+        
+        #studentThree = Student('Brown', 'Bobby', 'none', 'none', 'hd')
+        
+        #studentFour = Student('Bee', 'Bumble', 'none', 'none', 'ebal')
         studentFive = Student('Brown', 'Charlie', 'none', 'none', 'hdhdhd')
-        courseOffering.register_students(studentOne,studentTwo,studentThree,studentFive,studentFour)
+        stdList = [studentOne,studentTwo,studentFive]
         
+        #Act
+        courseOffering.register_students(stdList)
+        courseOffering.submit_grade(studentOne,70)
+        courseOffering.submit_grade(studentTwo,50)
+       # courseOffering.submit_grade(studentThree,70)
+       # courseOffering.submit_grade(studentFour,85)
+        courseOffering.submit_grade(studentFive,50)
         
-        courseOffering.submit_grade(studentOne.username,95)
-        courseOffering.submit_grade(studentTwo.username,50)
-        courseOffering.submit_grade(studentThree.username,70)
-        courseOffering.submit_grade(studentFour.username,85)
-        courseOffering.submit_grade(studentFive.username,50)
-        
-        assert courseOffering.get_grade(studentThree) == 'C-'
-        
+        #Assert
         #checking the registered students mehtod 
-        assert courseOffering.registered_students.__contains__(studentFive)
-        #testing the constructor
+        assert courseOffering.get_grade(studentOne) == 'C-'
+        assert len(courseOffering.registered_students) == len(stdList) 
         assert courseOffering.quarter == 4
 
 class Test_institution(unittest.TestCase):
@@ -86,7 +89,34 @@ class Test_institution(unittest.TestCase):
 
 class Test_instructor(unittest.TestCase):
     def test_instructor(self):
-        instructor = Instructor('Builder','Bob','Quinnipiac',10/10/2000,'bobBuilder') 
+        #Arrange
+        #need instructor
+        instructor = Instructor('Builder','Bob','Quinnipiac','10/10/2000','bobBuilder') 
+        course = Course('Software',25,'Quality Assurance',3)
+        courseOffering = CourseOffering(course, '2','2023','3') 
+        courseOfferingTwo = CourseOffering(course, '2','2022','4') 
+        coursesList = [courseOffering,courseOfferingTwo]
+        instructor.course_list = coursesList
         
-        #testing the constructor
+        instructorTwo = Instructor('Boomer','Bob','Quinnipiac','10/10/2000','bobBuilder') 
+        courseOfferingThree = CourseOffering(course, '2','2022','3') 
+        courseOfferingFour = CourseOffering(course, '2','2021','3') 
+        courseOffers = [courseOfferingFour,courseOfferingThree]
+        instructorTwo.course_list = courseOffers
+        
+         
+        instructorThree = Instructor('Boomer','Bob','Quinnipiac','10/10/2000','bobBuilder') 
+        courseOfferingFive = CourseOffering(course, '2','2022','3') 
+        courseOfferingSix = CourseOffering(course, '2','2024','3') 
+        courseOffersTwo = [courseOfferingSix,courseOfferingFive]
+        instructorThree.course_list = courseOffersTwo
+        
+        #Act
+        returnedCourses = instructor.list_courses()
+        
+        
+        #Assert
+        assert len(instructorTwo.list_courses('2022')) == 1
+        assert len(instructorTwo.list_courses('2022', '3')) == 1
+        assert len(returnedCourses) == len(coursesList)
         assert instructor.first_name == 'Bob'

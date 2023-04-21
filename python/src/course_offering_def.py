@@ -1,5 +1,6 @@
 import datetime
 from student_def import Student 
+
 class CourseOffering:
     def __init__(self, course, section_number, year, quarter):
         self.course = course
@@ -10,10 +11,10 @@ class CourseOffering:
         self.registered_students = [] #keep a list of registered students
         self.grades = {} #keep a dictionary of grades keyed by username
 
-    def register_students(self, *args):
-        for arg in args:
-            self.registered_students.append(arg)
-            arg.course_list.append(self) #add courseoffering to list of this student's course
+    def register_students(self, students):
+        for student in students:
+            self.registered_students.append(student)
+            student.course_list.append(self) #add courseoffering to list of this student's course
 
     def get_students(self):
         return self.registered_students
