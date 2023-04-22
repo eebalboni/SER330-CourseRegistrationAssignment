@@ -1,10 +1,16 @@
 import datetime
+from course_def import Course
+from student_def import Student
+from course_offering_def import CourseOffering
+from instructor_def import Instructor
 
 class Institution:
     def __init__(self, name, domain): #adding a domain to constructor, since there is no standard method you can build for it
         self.name = name
         self.domain = domain
-        self.student_list = {} #key = student username, value = student object
+
+        #key = student username, value = student object
+        self.student_list = {} 
         self.course_catalog = {} #key = course name; value = courses; #institution.coursecatalog[course].append(courseoffering)
         self.course_schedule = {} #key = course name; value = list course offerings
         self.faculty_list = {} #key = username #value = instructor
@@ -26,15 +32,15 @@ class Institution:
         else:
             raise TypeError('Only accepts student object')
 
-    def register_student_for_course(self,this_student,course_name, dept, number,section_number,year,quarter):
+    def register_student_for_course(self, this_student, course_name, dept, number,section_number,year,quarter):
         for offering in self.course_schedule[course_name]:
             if dept == offering.course.department and number == offering.course.number and year == offering.year and quarter == offering.quarter and section_number == offering.section_number:
                 if this_student in self.student_list.values(): #if student is enrolled in school
                     if this_student in offering.registered_students: #if student is already enrolled in this offering
                         print('\n' + this_student.first_name + ' ' + this_student.last_name + ' is already enrolled in this course' +'\n')
                     else:
-                        offering.register_students(this_student)
-                        print('\n' + this_student.first_name + ' ' + this_student.last_name + ' has been enrolled ' + offering.__str__() +'\n')
+                        offering.register_students([this_student])
+                        #print('\n' + this_student.first_name + ' ' + this_student.last_name + ' has been enrolled ' + offering.__str__() +'\n')
 
     def list_instructors(self):
         print('\n' + 'Instructor List (' + self.name + ') \n' + '-------------------------------------------')
@@ -121,10 +127,12 @@ class Institution:
     def add_course_offering(self, course_offering):
         if isinstance(course_offering, CourseOffering): #check for right instance
             if course_offering.course.name in self.course_catalog.keys(): #check to see if course in course catalog
+                
                 self.course_schedule.setdefault(course_offering.course.name, []) #sets default values to list
+
+                # Course Offerings are stored as a collection in a dictionary based on course_name
                 self.course_schedule[course_offering.course.name].append(course_offering)
             else:
                 return 'Please create a course before creating course offering'
         else:
             raise TypeError('Only accepts course offering as argument')
-

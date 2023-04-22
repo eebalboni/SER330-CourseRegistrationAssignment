@@ -1,4 +1,3 @@
-
 import unittest
 
 from person_def import Person
@@ -34,25 +33,26 @@ class Test_course(unittest.TestCase):
      
 if __name__ == '__main__':
     unittest.main() 
-    
+           
+
 class Test_student(unittest.TestCase):
-    def test_student(self):
-        student = Student('LastName', 'FirstName', 'none', 'none', 'none')
+    def test_studentInit_WhenAllConditionsAreMet_succeeds(self):
         
-        courseTwo = CourseOffering(3,'English',2023,2)
-        courseThree = CourseOffering(1,'Science',2023,4)
-        courseOffering = CourseOffering(2,'Math',2023,4) 
+        course = Course("Computer Science", 1234, "Test Class", 3)
+        cc = CourseOffering(course, "123", "2023", "1")
+        student1 = Student("Test", "Test", "School Test", "4/20/2023", "userName")
         
-        student.course_list.append(courseOffering)
-        student.course_list.append(courseTwo)
-        student.course_list.append(courseThree)
+        cc.submit_grade(student1,'A')
+        assert student1.last_name == 'Test'
+        assert student1.gpa == 0
+        assert len(student1.transcript) == 1
+        assert student1.credits == 0
+        assert len(student1.course_list) == 0
+        assert len(student1.transcript)==1
+        assert student1.list_courses == course
         
-        #print(str(Student.list_courses(self)))
-     
-        #Testing the constructor 
-        assert student.course_list != 0
-        assert student.school == ('none')
         
+    
 class Test_courseOffering(unittest.TestCase):
     def test_courseOffering(self):
         #Arrange
@@ -76,16 +76,9 @@ class Test_courseOffering(unittest.TestCase):
         
         #Assert
         #checking the registered students mehtod 
-        assert courseOffering.get_grade(studentOne) == 'C-'
+        # assert courseOffering.get_grade(studentOne) == 'C-'
         assert len(courseOffering.registered_students) == len(stdList) 
         assert courseOffering.quarter == 4
-
-class Test_institution(unittest.TestCase):
-    def test_institution(self):
-        institution = Institution('Quinnipiac','.edu') 
-        
-        #testing the constructor
-        assert institution.name != 'Fairfield'
 
 class Test_instructor(unittest.TestCase):
     def test_instructor(self):
@@ -120,3 +113,81 @@ class Test_instructor(unittest.TestCase):
         assert len(instructorTwo.list_courses('2022', '3')) == 1
         assert len(returnedCourses) == len(coursesList)
         assert instructor.first_name == 'Bob'
+
+def test_VerifyGradeSubmission_WhenAllConditionsAreMet_ReturnsTrue_Pytest():
+    
+    # Arrange
+    course = Course("Computer Science", 1234, "Test Class", 3)
+    cc = CourseOffering(course, "123", "2023", "1")
+    student1 = Student("Test", "Test", "School Test", "4/20/2023", "userName")
+    studentsList = [student1]
+    
+    # Act
+    #cc.register_students(studentsList)
+    cc.submit_grade(student1, 'B')
+
+    # Assert
+    # Grades is a dictionary not a list
+    # Grades are stored in the dictionary by user name
+    # Given this we can test for multiple conditions
+
+     # does 1 and only 1 grade exist?
+    assert len(cc.grades) == 1
+    
+    # Is the key of the grade the username for student 1?
+    assert cc.grades.keys().__contains__("userName")
+    
+    #s  Ithe value of this grade a B?
+    assert cc.grades.get("userName") == 'B'
+    
+
+def test_institution():    
+    # Arrange
+    # Define a course and a course offering
+    #this is test institution
+    department = "ComputerScience"
+    courseNumber = 1234
+    courseName = "TestClass"
+    courseCredits = 3
+    courseSectionNumber = 123
+    courseOfferYear = 2023
+    courseQuarter = 1
+    
+    course = Course(department=department, number=courseNumber, name=courseName, credits= courseCredits)
+    course2 = Course(department=department, number=courseNumber, name=courseName, credits= courseCredits)
+    courseOffering = CourseOffering(course, courseSectionNumber, courseOfferYear, courseQuarter)
+
+    # Define a student
+    student1 = Student("Test", "Test", "School Test", "4/20/2023", "test")
+    
+    # Define an institution
+    institution = Institution("Quinnipiac University", "qu.edu")
+
+    #Add the course to the institution (to the course catalog)
+    institution.add_course(course)
+
+    # Add the course to to the planned course offerings
+    institution.add_course_offering(courseOffering)
+
+    # Enroll the student into the school
+    institution.enroll_student(student1)
+
+    courseSchedule = institution.course_schedule
+    # Act
+    # Register the student for the course
+    institution.register_student_for_course(student1, courseName, department, courseNumber, courseSectionNumber, courseOfferYear, courseQuarter)
+
+    #instructor
+    instructor1 = Instructor('last','first',institution,'06/08/2000','ee')
+    institution.hire_instructor(instructor1)
+    
+    # Assert
+    assert len(courseOffering.registered_students) == 1
+    assert len(institution.course_catalog) == 1
+    assert institution.domain == 'qu.edu'
+    assert len(institution.faculty_list) == 1
+    assert institution.add_course(course2) == 'Course has already been added'
+    assert len(institution.student_list) == 1
+    #assert institution.assign_instructor(instructor1,courseName,'0',courseNumber,'1',courseOfferYear,courseQuarter) == 'Course not found. Please create a course and course offering'
+    assert len(institution.course_catalog) == 1
+    

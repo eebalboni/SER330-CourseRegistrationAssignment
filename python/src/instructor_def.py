@@ -6,7 +6,7 @@ class Instructor(Person):
         Person.__init__(self, last_name, first_name, school, date_of_birth, username, 'instructor')
         self.course_list = [] # key = self.course.name
 
-    def list_courses(self,year=None,quarter=None):
+    def list_courses(self, year=None, quarter=None):
         if year and quarter: #filter by year and quarter
             filtered = list(filter(lambda x: x.year == year and x.quarter == quarter, self.course_list)) #filters
             final = sorted(filtered, key = lambda x: (x.year, x.quarter), reverse=True) #sorts
