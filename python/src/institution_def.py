@@ -26,7 +26,7 @@ class Institution:
     def enroll_student(self, student):
         if isinstance(student,Student):
             if student.username in self.student_list.keys():
-                print(student.first_name + ' ' + student.last_name + ' is already enrolled!')
+                return(student.first_name + ' ' + student.last_name + ' is already enrolled!')
             else:
                 self.student_list[student.username] = student
         else:
@@ -37,7 +37,7 @@ class Institution:
             if dept == offering.course.department and number == offering.course.number and year == offering.year and quarter == offering.quarter and section_number == offering.section_number:
                 if this_student in self.student_list.values(): #if student is enrolled in school
                     if this_student in offering.registered_students: #if student is already enrolled in this offering
-                        print('\n' + this_student.first_name + ' ' + this_student.last_name + ' is already enrolled in this course' +'\n')
+                        return(this_student.first_name + ' ' + this_student.last_name + ' is already enrolled in this course')
                     else:
                         offering.register_students([this_student])
                         #print('\n' + this_student.first_name + ' ' + this_student.last_name + ' has been enrolled ' + offering.__str__() +'\n')
@@ -53,7 +53,7 @@ class Institution:
     def hire_instructor(self, instructor):
         if isinstance(instructor, Instructor):
             if instructor.username in self.faculty_list.keys():
-                print(instructor.first_name + ' ' + instructor.last_name + ' already works at this institution!')
+                return(instructor.first_name + ' ' + instructor.last_name + ' already works at this institution!')
             else:
                 self.faculty_list[instructor.username] = instructor
         else:
@@ -63,13 +63,13 @@ class Institution:
         for offering in self.course_schedule[course_name]:
             if dept == offering.course.department and number == offering.course.number and year == offering.year and quarter == offering.quarter and section_number == offering.section_number:
                 if offering.instructor == this_instructor:
-                    print('\n' + this_instructor.first_name + ' ' + this_instructor.last_name + ' is already teaching this course' +'\n')
+                    return(this_instructor.first_name + ' ' + this_instructor.last_name + ' is already teaching this course')
                 else:
                     offering.instructor = this_instructor
                     this_instructor.course_list.append(offering)
-                    print('\n' + this_instructor.first_name + ' ' + this_instructor.last_name + ' has been assigned to teach ' + offering.__str__() +'\n')
+                    return(this_instructor.first_name + ' ' + this_instructor.last_name + ' has been assigned to teach course')
             else:
-                print('Course not found. Please create a course and course offering')
+                return('Course not found. Please create a course and course offering')
 
     def list_course_catalog(self):
         print('\n' + 'Course Catalog (' + self.name + ') \n' + '----------------------------------------')
@@ -89,7 +89,7 @@ class Institution:
                 for x in schedule:
                     print(x)
             else:
-                print('No offerings during this semester')
+                return('No offerings during this semester')
             #return schedule
         else: #filter only by dept
             schedule = []
@@ -103,9 +103,9 @@ class Institution:
                     for x in schedule:
                         print(x)
                 else:
-                    print('No offerings scheduled during this semester')
+                    return('No offerings scheduled during this semester')
             else:
-                print('No offerings currently scheduled')
+                return('No offerings currently scheduled')
             #return schedule
 
     def list_registered_students(self,course_name, dept, number,section_number,year,quarter):
